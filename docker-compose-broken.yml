@@ -18,6 +18,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     ports:
       - "8000:8000"
   migrations:
@@ -27,8 +29,7 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    command: >
-      sh -c "python3 manage.py migrate"
+
   db:
     image: postgres:latest
     environment:
@@ -39,7 +40,7 @@ services:
     env_file:
       - .env
     ports:
-      - 5433:5432
+      - 5432:5432
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -47,5 +48,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+
 volumes:
   pg_data:
