@@ -9,9 +9,7 @@ services:
     ports:
       - "80:80"
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: stavitskii/skydiario:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     env_file:
       - .env
@@ -21,7 +19,7 @@ services:
     ports:
       - "8000:8000"
   migrations:
-    build: .
+    image: stavitskii/skydiario:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     depends_on:
       db:
         condition: service_healthy
@@ -32,9 +30,9 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: postgres
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_NAME
     restart: always
     env_file:
       - .env
